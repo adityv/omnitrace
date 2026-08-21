@@ -32,6 +32,8 @@ The official [Commander.js documentation](https://github.com/tj/commander.js) co
 
 The final suite passes **17/17 tests**. These include sanitizer regression tests, OpenAI and Ollama HTTP-mock tests, watcher state tests, a real Chokidar temporary-file integration test, partial-line handling, CLI help, missing-file failure behavior, and isolated-home config persistence.
 
+GitHub Actions completed successfully across **Ubuntu, macOS, and Windows** for Node.js 18, 20, and 22, plus a dedicated coverage-gate job. The repository is published privately at https://github.com/adityv/omnitrace with homepage metadata set to https://getomnitrace.bond.
+
 JavaScript syntax validation passes for every source module. `npm audit --omit=dev --audit-level=moderate` reports **0 vulnerabilities**. `npm pack --dry-run` confirms the npm package contains the intended ten publication files and excludes tests, local dependencies, and audit artifacts.
 
 ## Operational notes
