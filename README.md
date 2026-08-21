@@ -10,7 +10,17 @@ OmniTrace is designed for fast incident response without casually leaking produc
 
 ## Requirements
 
-Node.js 18.17 or newer is recommended. For local analysis, install [Ollama](https://ollama.com/) and pull a model such as `llama3.2`.
+Node.js 18.17 or newer is required. If `node -v` shows v12, upgrade before installing; OmniTrace now exits early with a readable version message instead of a cryptic `Cannot find module 'node:path'` error. On a Linux shell, the simplest upgrade path is:
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.8/install.sh | bash
+. ~/.nvm/nvm.sh
+nvm install 20
+nvm use 20
+node -v
+```
+
+For local analysis, install [Ollama](https://ollama.com/) and pull a model such as `llama3.2`.
 
 ## Install
 

@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+const [nodeMajor, nodeMinor] = process.versions.node.split('.').map(Number);
+if (nodeMajor < 18 || (nodeMajor === 18 && nodeMinor < 17)) {
+  console.error('OmniTrace requires Node.js 18.17 or newer. Please upgrade Node.js and try again.');
+  process.exit(1);
+}
+
 const path = require('node:path');
 const packageMetadata = require('../package.json');
 const { Command } = require('commander');
