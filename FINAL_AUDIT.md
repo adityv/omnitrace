@@ -2,7 +2,7 @@
 
 ## Scope
 
-This audit reviewed the attached product requirements, the current source tree, dependency health, CLI behavior, watcher semantics, sanitizer coverage, provider payloads, npm packaging, demo onboarding, terminal presentation, visual assets, and end-to-end smoke behavior. The public marketing website remains intentionally deferred; this release focuses on a useful, demo-ready CLI core.
+This audit reviewed the attached product requirements, the current source tree, dependency health, CLI behavior, watcher semantics, sanitizer coverage, provider payloads, npm packaging, demo onboarding, terminal presentation, visual assets, runtime compatibility, and end-to-end smoke behavior. The public marketing website remains intentionally deferred; this release focuses on a useful, demo-ready CLI core.
 
 ## External compatibility and product research
 
@@ -33,6 +33,7 @@ OpenTelemetry's [semantic-conventions documentation][7] explains that common nam
 | Cross-platform CI | GitHub Actions runs Linux, macOS, and Windows against Node.js 18, 20, and 22, with a separate coverage gate. |
 | Branding | Added a scalable SVG mark, optimized 512px PNG logo, and verified terminal screenshots. |
 | Website scope | Removed the old landing-page artifact from the core release. `getomnitrace.bond` is kept in README and npm/GitHub metadata for the later website project. |
+| Runtime compatibility | Added an early Node.js 18.17 guard after reproducing the user's Node.js 12 failure; unsupported runtimes now receive an actionable upgrade message instead of `Cannot find module 'node:path'`. |
 
 ## Validation results
 
@@ -40,9 +41,9 @@ The final local suite passes **24/24 tests**. It includes sanitizer regressions,
 
 Local ESLint, Node syntax checks, coverage thresholds, and `npm audit --omit=dev --audit-level=moderate` all pass. Current coverage is **89.63% lines**, **86.11% functions**, and **70.37% branches**, above the enforced thresholds of 75%, 75%, and 65%. The npm package dry-run reports a compact package of approximately 391 KB after including the optimized 512px logo and verified screenshots.
 
-GitHub Actions completed successfully across **Ubuntu, macOS, and Windows** for Node.js 18, 20, and 22, plus a dedicated coverage-gate job. The repository is published privately at [github.com/adityv/omnitrace](https://github.com/adityv/omnitrace) with homepage metadata set to [getomnitrace.bond](https://getomnitrace.bond).
+GitHub Actions completed successfully across **Ubuntu, macOS, and Windows** for Node.js 18, 20, and 22, plus a dedicated coverage-gate job. The repository is now public at [github.com/adityv/omnitrace](https://github.com/adityv/omnitrace), and an unauthenticated shallow clone followed by `npm ci` and `omnitrace demo --json` was verified successfully. Its homepage metadata is set to [getomnitrace.bond](https://getomnitrace.bond).
 
-The final npm tarball was installed into an isolated global prefix and the installed `omnitrace demo --json --delay 0` command completed successfully. The setup wizard was also executed with an isolated home directory.
+The final npm tarball was installed into an isolated global prefix and the installed `omnitrace demo --json --delay 0` command completed successfully. The reported Node.js 12.22.12 environment was reproduced with an explicit guard: the command exits cleanly with `OmniTrace requires Node.js 18.17 or newer`, so the next step is upgrading Node before installation. The setup wizard was also executed with an isolated home directory.
 
 The demo output and JSON output were executed as real subprocesses. The JSON result was parsed successfully, reported three redactions, and contained no demo email or password. The pretty terminal output was rendered into a screenshot and visually checked for readable hierarchy, redaction visibility, and local-provider messaging.
 
