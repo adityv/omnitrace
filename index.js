@@ -4,6 +4,7 @@ module.exports = {
   watcher: require('./src/watcher'),
   ai: require('./src/ai'),
   demo: require('./src/demo'),
-  ui: require('./src/ui')
+  ui: require('./src/ui'),
+  setup: require('./src/setup')
 };
 

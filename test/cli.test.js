@@ -51,6 +51,22 @@ test('writes config to an isolated home directory', async () => {
   }
 });
 
+test('runs non-interactive setup without exposing credentials', async () => {
+  const home = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'omnitrace-setup-'));
+  try {
+    const result = runCli(['setup', '--yes', '--provider', 'ollama', '--model', 'llama3.2'], {
+      HOME: home,
+      USERPROFILE: home
+    });
+    assert.equal(result.status, 0);
+    assert.match(result.stdout, /Setup saved locally/);
+    assert.match(result.stdout, /llama3.2/);
+    assert.equal(result.stdout.includes('super-secret'), false);
+  } finally {
+    await fs.promises.rm(home, { recursive: true, force: true });
+  }
+});
+
 test('runs the zero-key demo through the CLI entrypoint', () => {
   const result = runCli(['demo', '--json', '--delay', '0']);
   assert.equal(result.status, 0);

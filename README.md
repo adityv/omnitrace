@@ -67,6 +67,22 @@ The demo creates a temporary log, watches it with the real file watcher, detects
 omnitrace demo --json
 ```
 
+## Guided setup
+
+For an interactive first-time setup, run:
+
+```bash
+omnitrace setup
+```
+
+For scripts or a local-only default without prompts:
+
+```bash
+omnitrace setup --yes --provider ollama --model llama3.2
+```
+
+You can rerun setup or use `omnitrace config set ...` at any time. Configuration remains on your machine in `~/.omnitrace-config.json`; the CLI does not upload configuration files or logs by itself.
+
 ## Configure
 
 OmniTrace stores configuration in `~/.omnitrace-config.json` using a platform-safe path and restrictive file permissions. It can also read the PRD-compatible `~/.omnitrace/config.json` location for backwards compatibility.
@@ -149,6 +165,7 @@ src/sanitizer.js Local redaction rules
 src/watcher.js  Cross-platform file tailing and context capture
 src/ai.js       OpenAI and Ollama routing
 src/demo.js     Zero-key local demonstration flow
+src/setup.js    Guided local provider setup wizard
 src/ui.js       Terminal presentation and JSON formatting
 assets/         Logo and repository branding
 test/           Unit, integration, demo, and CLI smoke tests

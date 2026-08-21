@@ -23,6 +23,7 @@ OpenTelemetry's [semantic-conventions documentation][7] explains that common nam
 | Area | Final change |
 | --- | --- |
 | Zero-key onboarding | Added `omnitrace demo`, which creates a temporary log, uses the real watcher, detects a synthetic error, sanitizes it, and generates a local diagnosis without API keys, Ollama, accounts, or network access. |
+| Setup wizard | Added `omnitrace setup` with interactive and non-interactive provider/model selection; configuration remains local and credentials are masked in status output. |
 | Terminal UX | Added a branded terminal header, clear status information, sanitized-context presentation, redaction counts, local-provider labeling, and `--json` output for automation. |
 | Configuration UX | Added `omnitrace config show` with masked credentials and clear config-path visibility. |
 | File watching | Retained serialized reads, file identity/truncation resets, unlink handling, safe callback defaults, partial-line handling, and injectable analysis. |
@@ -35,11 +36,13 @@ OpenTelemetry's [semantic-conventions documentation][7] explains that common nam
 
 ## Validation results
 
-The final local suite passes **23/23 tests**. It includes sanitizer regressions, OpenAI and Ollama HTTP mocks, watcher state tests, a real Chokidar temporary-file integration test, partial-line handling, CLI help, isolated-home config persistence, local demo execution, UI JSON formatting, and missing-file failure behavior.
+The final local suite passes **24/24 tests**. It includes sanitizer regressions, OpenAI and Ollama HTTP mocks, watcher state tests, a real Chokidar temporary-file integration test, partial-line handling, CLI help, isolated-home config persistence, local demo execution, UI JSON formatting, and missing-file failure behavior.
 
-Local ESLint, Node syntax checks, coverage thresholds, and `npm audit --omit=dev --audit-level=moderate` all pass. Current coverage is **90.63% lines**, **85.71% functions**, and **76.22% branches**, above the enforced thresholds of 75%, 75%, and 65%. The npm package dry-run reports a compact package of approximately 391 KB after including the optimized 512px logo and verified screenshots.
+Local ESLint, Node syntax checks, coverage thresholds, and `npm audit --omit=dev --audit-level=moderate` all pass. Current coverage is **89.63% lines**, **86.11% functions**, and **70.37% branches**, above the enforced thresholds of 75%, 75%, and 65%. The npm package dry-run reports a compact package of approximately 391 KB after including the optimized 512px logo and verified screenshots.
 
 GitHub Actions completed successfully across **Ubuntu, macOS, and Windows** for Node.js 18, 20, and 22, plus a dedicated coverage-gate job. The repository is published privately at [github.com/adityv/omnitrace](https://github.com/adityv/omnitrace) with homepage metadata set to [getomnitrace.bond](https://getomnitrace.bond).
+
+The final npm tarball was installed into an isolated global prefix and the installed `omnitrace demo --json --delay 0` command completed successfully. The setup wizard was also executed with an isolated home directory.
 
 The demo output and JSON output were executed as real subprocesses. The JSON result was parsed successfully, reported three redactions, and contained no demo email or password. The pretty terminal output was rendered into a screenshot and visually checked for readable hierarchy, redaction visibility, and local-provider messaging.
 

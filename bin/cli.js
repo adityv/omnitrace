@@ -7,6 +7,7 @@ const chalk = require('chalk');
 const { setConfigValue, getConfig, getConfigPath } = require('../src/config');
 const { watchLogFile } = require('../src/watcher');
 const { runDemo } = require('../src/demo');
+const { runSetupWizard } = require('../src/setup');
 const { renderAnalysis, renderHeader, renderJsonResult } = require('../src/ui');
 
 const program = new Command();
@@ -55,6 +56,29 @@ configCommand
       ollamaUrl: config.ollamaUrl,
       openaiUrl: config.openaiUrl
     }, null, 2));
+  });
+
+program
+  .command('setup')
+  .description('Configure a local Ollama or OpenAI provider')
+  .option('--provider <provider>', 'Provider: ollama or openai')
+  .option('--model <model>', 'Model name')
+  .option('--api-key <key>', 'OpenAI API key; prefer environment variables in shared shells')
+  .option('-y, --yes', 'Use defaults without interactive prompts')
+  .action(async (options) => {
+    try {
+      const config = await runSetupWizard(options);
+      console.log(chalk.green('Setup saved locally.'));
+      console.log(JSON.stringify({
+        provider: config.provider,
+        model: config.model,
+        apiKey: maskSecret(config.apiKey),
+        configPath: getConfigPath()
+      }, null, 2));
+    } catch (error) {
+      console.error(chalk.red(`Setup failed: ${error.message}`));
+      process.exitCode = 1;
+    }
   });
 
 program
