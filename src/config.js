@@ -10,10 +10,11 @@ function getConfigPath() {
 }
 
 function normalizeConfig(config) {
+  const provider = String(config.provider || 'ollama').toLowerCase();
   return {
-    provider: config.provider || 'ollama',
+    provider,
     apiKey: config.apiKey || config.openaiApiKey || '',
-    model: config.model || (config.provider === 'ollama' ? 'llama3.2' : 'gpt-4o-mini'),
+    model: config.model || (provider === 'ollama' ? 'llama3.2' : 'gpt-4o-mini'),
     ollamaUrl: config.ollamaUrl || 'http://localhost:11434/api/generate',
     openaiUrl: config.openaiUrl || 'https://api.openai.com/v1/chat/completions'
   };
@@ -62,5 +63,6 @@ module.exports = {
   DIRECTORY_CONFIG_FILE,
   getConfigPath,
   getConfig,
-  setConfigValue
+  setConfigValue,
+  normalizeConfig
 };

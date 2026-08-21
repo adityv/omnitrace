@@ -20,6 +20,7 @@ test('prints CLI help without errors', () => {
   assert.match(result.stdout, /Privacy-first AI log debugger/);
   assert.match(result.stdout, /config/);
   assert.match(result.stdout, /analyze/);
+  assert.match(result.stdout, /demo/);
 });
 
 test('writes config to an isolated home directory', async () => {
@@ -32,9 +33,30 @@ test('writes config to an isolated home directory', async () => {
     assert.equal(result.status, 0);
     const config = JSON.parse(await fs.promises.readFile(path.join(home, '.omnitrace-config.json'), 'utf8'));
     assert.equal(config.provider, 'openai');
+
+    const keyResult = runCli(['config', 'set', 'apiKey', 'super-secret-api-key'], {
+      HOME: home,
+      USERPROFILE: home
+    });
+    assert.equal(keyResult.status, 0);
+    const showResult = runCli(['config', 'show'], {
+      HOME: home,
+      USERPROFILE: home
+    });
+    assert.equal(showResult.status, 0);
+    assert.equal(showResult.stdout.includes('super-secret-api-key'), false);
+    assert.match(showResult.stdout, /supe…-key/);
   } finally {
     await fs.promises.rm(home, { recursive: true, force: true });
   }
+});
+
+test('runs the zero-key demo through the CLI entrypoint', () => {
+  const result = runCli(['demo', '--json', '--delay', '0']);
+  assert.equal(result.status, 0);
+  const payload = JSON.parse(result.stdout);
+  assert.equal(payload.provider, 'local-demo');
+  assert.equal(payload.redactions, 3);
 });
 
 test('returns a non-zero exit code for a missing log file', () => {

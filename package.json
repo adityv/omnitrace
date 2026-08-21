@@ -1,6 +1,6 @@
 {
   "name": "omnitrace",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Open-source, privacy-first AI log debugger for real-time error analysis with automatic secret sanitization",
   "type": "commonjs",
   "author": "Aditya Wadhonkar <https://github.com/adityv>",
@@ -15,15 +15,17 @@
     "README.md",
     "SECURITY.md",
     "LICENSE",
-    "index.html"
+    "assets",
+    "screenshots"
   ],
   "scripts": {
     "start": "node ./bin/cli.js",
     "test": "node --test",
-    "lint": "node --check ./bin/cli.js && node --check ./src/config.js && node --check ./src/sanitizer.js && node --check ./src/watcher.js && node --check ./src/ai.js && eslint .",
+    "lint": "node --check ./bin/cli.js && node --check ./src/config.js && node --check ./src/sanitizer.js && node --check ./src/watcher.js && node --check ./src/ai.js && node --check ./src/demo.js && node --check ./src/ui.js && eslint .",
     "coverage": "c8 --all --include=src --check-coverage --lines 75 --functions 75 --branches 65 --reporter=text npm test",
     "security": "npm audit --omit=dev --audit-level=moderate",
-    "package-check": "npm pack --dry-run"
+    "package-check": "npm pack --dry-run",
+    "demo": "node ./bin/cli.js demo"
   },
   "engines": {
     "node": ">=18.17.0"

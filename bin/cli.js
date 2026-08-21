@@ -1,23 +1,34 @@
 #!/usr/bin/env node
 
 const path = require('node:path');
+const packageMetadata = require('../package.json');
 const { Command } = require('commander');
 const chalk = require('chalk');
 const { setConfigValue, getConfig, getConfigPath } = require('../src/config');
 const { watchLogFile } = require('../src/watcher');
+const { runDemo } = require('../src/demo');
+const { renderAnalysis, renderHeader, renderJsonResult } = require('../src/ui');
 
 const program = new Command();
+
+function maskSecret(value) {
+  if (!value) return 'not set';
+  const stringValue = String(value);
+  return `${stringValue.slice(0, 4)}…${stringValue.slice(-4)}`;
+}
 
 program
   .name('omnitrace')
   .description('Privacy-first AI log debugger')
-  .version('1.0.0');
+  .version(packageMetadata.version);
 
-program
+const configCommand = program
   .command('config')
-  .description('Manage OmniTrace configuration')
+  .description('Manage OmniTrace configuration');
+
+configCommand
   .command('set <key> <value>')
-  .description('Set a configuration value')
+  .description('Set provider, key, model, or endpoint')
   .action((key, value) => {
     try {
       const saved = setConfigValue(key, value);
@@ -31,35 +42,82 @@ program
     }
   });
 
+configCommand
+  .command('show')
+  .description('Show active configuration without revealing credentials')
+  .action(() => {
+    const config = getConfig();
+    console.log(JSON.stringify({
+      path: getConfigPath(),
+      provider: config.provider,
+      model: config.model,
+      apiKey: maskSecret(config.apiKey),
+      ollamaUrl: config.ollamaUrl,
+      openaiUrl: config.openaiUrl
+    }, null, 2));
+  });
+
 program
   .command('analyze <filepath>')
   .description('Watch a log file and analyze new errors')
   .option('-p, --prompt <prompt>', 'Additional instruction for the AI')
+  .option('-j, --json', 'Print analysis events as JSON')
   .action(async (filepath, options) => {
     const resolvedPath = path.resolve(filepath);
     const config = getConfig();
 
-    console.log(chalk.cyan(`Watching ${resolvedPath}`));
-    console.log(chalk.gray(`Provider: ${config.provider || 'ollama (default)'}`));
-    console.log(chalk.gray('Press Ctrl+C to stop.'));
+    if (!options.json) {
+      console.log(renderHeader('watch'));
+      console.log(`  Watching ${resolvedPath}`);
+      console.log(`  ${chalk.gray('Provider'.padEnd(14))} ${chalk.magenta(config.provider || 'ollama')}`);
+      console.log(`  ${chalk.gray('Model'.padEnd(14))} ${chalk.white(config.model)}`);
+      console.log(`  ${chalk.gray('Status'.padEnd(14))} ${chalk.green('ready')}`);
+      console.log(chalk.gray('\n  Press Ctrl+C to stop.\n'));
+    }
 
     try {
       await watchLogFile(resolvedPath, {
         config,
         additionalPrompt: options.prompt,
-        onError: ({ original, response }) => {
-          console.log(`\n${chalk.red('Detected error:')}\n${original}`);
-          console.log(chalk.yellow('Sensitive values sanitized before AI analysis.'));
-          if (response) {
-            console.log(`\n${chalk.green('AI analysis:')}\n${response}`);
-          }
+        onError: ({ original, sanitized, response }) => {
+          if (options.json) console.log(renderJsonResult({
+            original,
+            sanitized,
+            response,
+            provider: config.provider
+          }));
+          else console.log(renderAnalysis({
+            original,
+            sanitized,
+            response,
+            provider: config.provider
+          }));
         },
         onFailure: (error) => {
-          console.error(chalk.red(`AI analysis failed: ${error.message}`));
+          if (options.json) console.error(JSON.stringify({ event: 'error', message: error.message }));
+          else console.error(chalk.red(`  AI analysis failed: ${error.message}`));
         }
       });
     } catch (error) {
-      console.error(chalk.red(`Unable to analyze log: ${error.message}`));
+      if (options.json) console.error(JSON.stringify({ event: 'error', message: error.message }));
+      else console.error(chalk.red(`Unable to analyze log: ${error.message}`));
+      process.exitCode = 1;
+    }
+  });
+
+program
+  .command('demo')
+  .description('Run a safe local demo without API keys or network access')
+  .option('-j, --json', 'Print the demo result as JSON')
+  .option('--delay <milliseconds>', 'Delay before appending the demo error', '350')
+  .action(async (options) => {
+    try {
+      await runDemo({
+        outputFormat: options.json ? 'json' : 'pretty',
+        delayMs: options.delay
+      });
+    } catch (error) {
+      console.error(chalk.red(`Demo failed: ${error.message}`));
       process.exitCode = 1;
     }
   });

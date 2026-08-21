@@ -2,7 +2,7 @@
 
 OmniTrace is an open-source, privacy-first AI log debugger for developers. It watches application logs in real time, captures the context around failures, redacts sensitive values locally, and routes the sanitized context to OpenAI or a local Ollama model.
 
-Project website: **[getomnitrace.bond](https://getomnitrace.bond)**. The website will be expanded separately; the current repository is intentionally focused on the CLI engine and developer workflow.
+Project website: **[getomnitrace.bond](https://getomnitrace.bond)**. The public website is intentionally deferred; this repository is focused on the CLI engine, demo workflow, and developer tooling. The current `assets/` directory contains product branding only, not the future marketing site.
 
 ## Why OmniTrace
 
@@ -14,19 +14,57 @@ Node.js 18.17 or newer is recommended. For local analysis, install [Ollama](http
 
 ## Install
 
-From npm:
+From npm, once the package is published:
 
 ```bash
 npm install -g omnitrace
+omnitrace demo
 ```
 
-From this repository:
+If the npm registry does not have the package yet, install and run the current source directly:
 
 ```bash
 git clone https://github.com/adityv/omnitrace.git
 cd omnitrace
 npm install
+npm run demo
+
+# Optional: make the local CLI available as `omnitrace`
 npm link
+omnitrace demo
+```
+
+To install the local build globally from an npm tarball:
+
+```bash
+npm pack
+npm install -g ./omnitrace-1.1.0.tgz
+omnitrace demo
+```
+
+
+## Brand and demo preview
+
+![OmniTrace logo](assets/omnitrace-logo.png)
+
+The screenshots below are generated from the real CLI output, not a mockup.
+
+![OmniTrace local demo](screenshots/omnitrace-demo.png)
+
+![OmniTrace JSON demo](screenshots/omnitrace-demo-json.png)
+
+## Try it immediately without an API key
+
+After installation, run this safe local demo:
+
+```bash
+omnitrace demo
+```
+
+The demo creates a temporary log, watches it with the real file watcher, detects a synthetic failure, redacts an email, IP address, and password, then prints a local diagnosis. It uses no API key, no external account, no Ollama installation, and no network request. For scripts or CI, use JSON output:
+
+```bash
+omnitrace demo --json
 ```
 
 ## Configure
@@ -55,10 +93,24 @@ omnitrace config set openaiUrl https://api.openai.com/v1/chat/completions
 omnitrace config set ollamaUrl http://localhost:11434/api/generate
 ```
 
+## Inspect active configuration
+
+```bash
+omnitrace config show
+```
+
+Credentials are masked in the output. Configuration writes to `~/.omnitrace-config.json` and accepts the legacy `~/.omnitrace/config.json` location for reading.
+
 ## Analyze a log
 
 ```bash
 omnitrace analyze ./app.log
+```
+
+The command stays attached and continues watching for new errors. Use `Ctrl+C` to stop it. For machine-readable integrations, add `--json`:
+
+```bash
+omnitrace analyze ./app.log --json
 ```
 
 Add an extra instruction for the model when needed:
@@ -96,8 +148,11 @@ src/config.js   User configuration persistence
 src/sanitizer.js Local redaction rules
 src/watcher.js  Cross-platform file tailing and context capture
 src/ai.js       OpenAI and Ollama routing
-test/           Unit, integration, and CLI smoke tests
-index.html      Initial static landing-page artifact
+src/demo.js     Zero-key local demonstration flow
+src/ui.js       Terminal presentation and JSON formatting
+assets/         Logo and repository branding
+test/           Unit, integration, demo, and CLI smoke tests
+.github/        Cross-platform CI and contribution templates
 ```
 
 ## Contributing
