@@ -23,6 +23,15 @@ test('prints CLI help without errors', () => {
   assert.match(result.stdout, /demo/);
 });
 
+test('shows guided onboarding when run without arguments', () => {
+  const result = runCli([]);
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /Your privacy-first log debugger is ready/);
+  assert.match(result.stdout, /omnitrace demo/);
+  assert.match(result.stdout, /omnitrace analyze \.\/app\.log/);
+  assert.match(result.stdout, /llama3\.2/);
+});
+
 test('writes config to an isolated home directory', async () => {
   const home = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'omnitrace-home-'));
   try {

@@ -24,31 +24,47 @@ For local analysis, install [Ollama](https://ollama.com/) and pull a model such 
 
 ## Install
 
-From npm, once the package is published:
+Install OmniTrace globally from npm—no repository clone is needed:
 
 ```bash
 npm install -g omnitrace
+omnitrace
+```
+
+Running `omnitrace` without arguments opens a beginner-friendly local onboarding screen. For the complete no-key walkthrough, run:
+
+```bash
 omnitrace demo
 ```
 
-If the npm registry does not have the package yet, install and run the current source directly:
+To watch an application log, run:
+
+```bash
+omnitrace analyze ./app.log
+```
+
+To update later:
+
+```bash
+npm update -g omnitrace
+```
+
+### Development-only installation
+
+Repository cloning and tarballs are only needed if you are contributing to OmniTrace or testing unreleased source:
 
 ```bash
 git clone https://github.com/adityv/omnitrace.git
 cd omnitrace
-npm install
-npm run demo
-
-# Optional: make the local CLI available as `omnitrace`
-npm link
+npm install -g .
 omnitrace demo
 ```
 
-To install the local build globally from an npm tarball:
+To make a local tarball while developing:
 
 ```bash
 npm pack
-npm install -g ./omnitrace-1.1.0.tgz
+npm install -g ./omnitrace-<version>.tgz
 omnitrace demo
 ```
 

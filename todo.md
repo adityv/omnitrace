@@ -1,0 +1,8 @@
+- [ ] Check the npm registry status and ownership of the unscoped `omnitrace` package name.
+- [ ] Confirm authenticated npm publish access and resolve any required account verification.
+- [ ] Audit the package manifest, published file list, CLI bin mapping, version, and release metadata.
+- [ ] Make `omnitrace` without subcommands present a clear beginner-friendly onboarding screen.
+- [ ] Validate unit tests, lint, coverage, npm audit, package contents, and unsupported-Node messaging.
+- [ ] Install the packed artifact into an isolated global prefix and run `omnitrace`, `omnitrace demo`, and CLI help.
+- [ ] Publish the production package to npm and verify registry install in a clean temporary prefix.
+- [ ] Commit, tag, and push the identical released source to GitHub.

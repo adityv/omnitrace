@@ -20,6 +20,33 @@ function renderStatus(label, value, color = 'gray') {
   return `${chalk.gray(`  ${label.padEnd(14)}`)} ${paint(value)}`;
 }
 
+function renderWelcome({ version, provider, model }) {
+  return [
+    renderHeader('watch'),
+    chalk.white.bold('  Your privacy-first log debugger is ready.'),
+    chalk.gray('  Start with a local trace — no account, key, or network required.'),
+    '',
+    chalk.cyanBright('  Quick start'),
+    chalk.white('  $ omnitrace demo'),
+    chalk.gray('    Run a safe local error + sanitization walkthrough.'),
+    '',
+    chalk.cyanBright('  Analyze a file'),
+    chalk.white('  $ omnitrace analyze ./app.log'),
+    chalk.gray('    Watch a log file and diagnose new errors after local redaction.'),
+    '',
+    chalk.cyanBright('  Configure a provider'),
+    chalk.white('  $ omnitrace setup'),
+    chalk.gray('    Choose local Ollama or OpenAI. Settings stay in your home directory.'),
+    '',
+    renderStatus('Version', version, 'white'),
+    renderStatus('Provider', provider || 'ollama', 'magenta'),
+    renderStatus('Model', model || 'llama3.2', 'white'),
+    '',
+    chalk.gray('  Run `omnitrace --help` to see every command.'),
+    ''
+  ].join('\n');
+}
+
 function countRedactions(text) {
   return (String(text).match(/\[REDACTED\]/g) || []).length;
 }
@@ -55,6 +82,7 @@ function renderJsonResult({ original, sanitized, response, provider }) {
 module.exports = {
   BRAND_MARK,
   renderHeader,
+  renderWelcome,
   renderStatus,
   countRedactions,
   renderAnalysis,

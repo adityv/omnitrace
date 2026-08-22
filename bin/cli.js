@@ -14,9 +14,19 @@ const { setConfigValue, getConfig, getConfigPath } = require('../src/config');
 const { watchLogFile } = require('../src/watcher');
 const { runDemo } = require('../src/demo');
 const { runSetupWizard } = require('../src/setup');
-const { renderAnalysis, renderHeader, renderJsonResult } = require('../src/ui');
+const { renderAnalysis, renderHeader, renderJsonResult, renderWelcome } = require('../src/ui');
 
 const program = new Command();
+
+if (process.argv.length === 2) {
+  const config = getConfig();
+  console.log(renderWelcome({
+    version: packageMetadata.version,
+    provider: config.provider,
+    model: config.model
+  }));
+  process.exit(0);
+}
 
 function maskSecret(value) {
   if (!value) return 'not set';

@@ -1,6 +1,6 @@
 {
   "name": "omnitrace",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Open-source, privacy-first AI log debugger for real-time error analysis with automatic secret sanitization",
   "type": "commonjs",
   "author": "Aditya Wadhonkar <https://github.com/adityv>",
