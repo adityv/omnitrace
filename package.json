@@ -6,7 +6,7 @@
   "author": "Aditya Wadhonkar <https://github.com/adityv>",
   "main": "index.js",
   "bin": {
-    "omnitrace": "./bin/cli.js"
+    "omnitrace": "bin/cli.js"
   },
   "files": [
     "bin",
@@ -46,7 +46,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/adityv/omnitrace.git"
+    "url": "git+https://github.com/adityv/omnitrace.git"
   },
   "bugs": {
     "url": "https://github.com/adityv/omnitrace/issues"
